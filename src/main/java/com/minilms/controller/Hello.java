@@ -13,6 +13,7 @@ public class Hello {
     @GetMapping("/hello")
     @ResponseBody
     public String hello(){
+        int x;
         return "Shreyash Magdum";
     }
 }
