@@ -1,0 +1,19 @@
+# ---------- Node / Frontend ----------
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.vite/
+
+# ---------- Java / Spring Boot ----------
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.idea/
+backend/*.log
+
+# ---------- OS / Editor ----------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
