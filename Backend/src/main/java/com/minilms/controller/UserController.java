@@ -1,6 +1,7 @@
 package com.minilms.controller;
 
-import com.minilms.entity.Role;
+import com.minilms.dto.userDto.CreateUserRequest;
+import com.minilms.dto.userDto.ViewUserDTO;
 import com.minilms.entity.User;
 import com.minilms.services.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -17,14 +18,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        user.setRole(Role.STUDENT);
-        user.setApproved(true);
-        return userService.saveUser(user);
+    public User createUser(@RequestBody CreateUserRequest request){
+        return userService.saveUser(request);
     }
 
     @GetMapping
-    public List<User> getUsers(){
+    public List<ViewUserDTO> getUsers(){
         return userService.getAllUsers();
     }
 

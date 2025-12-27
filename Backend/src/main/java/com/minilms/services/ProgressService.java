@@ -16,7 +16,7 @@ public class ProgressService {
     private final ProgressRepository progressRepository;
     private final CourseRepository courseRepository;
 
-    public ProgressService(ChapterRepository chapterRepository, CourseAssignmentRepository courseAssignmentRepository, UserRepository userRepository, ProgressService progressService, ProgressRepository progressRepository, CourseRepository courseRepository) {
+    public ProgressService(ChapterRepository chapterRepository, CourseAssignmentRepository courseAssignmentRepository, UserRepository userRepository, ProgressRepository progressRepository, CourseRepository courseRepository) {
         this.chapterRepository = chapterRepository;
         this.courseAssignmentRepository = courseAssignmentRepository;
         this.userRepository = userRepository;

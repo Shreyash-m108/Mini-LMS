@@ -1,5 +1,7 @@
 package com.minilms.services;
 
+import com.minilms.dto.userDto.CreateUserRequest;
+import com.minilms.dto.userDto.ViewUserDTO;
 import com.minilms.entity.User;
 import com.minilms.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    //add user
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -20,11 +22,27 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User saveUser(User user){
+    //add user
+    public User saveUser(CreateUserRequest createUserRequest){
+        User user = new User();
+        user.setName(createUserRequest.getName());
+        user.setEmail(createUserRequest.getEmail());
+        user.setPassword(createUserRequest.getPassword());
+        user.setRole(createUserRequest.getRole());
+        user.setApproved(createUserRequest.getApproved());
+        user.setCreatedAt(createUserRequest.getCreatedAt());
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<ViewUserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream().map(
+                        user -> new ViewUserDTO(
+                                user.getName(),
+                                user.getEmail(),
+                                user.getRole(),
+                                user.getApproved(),
+                                user.getCreatedAt()
+                        )).toList();
     }
 }

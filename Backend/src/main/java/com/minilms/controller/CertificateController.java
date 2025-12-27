@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/certificates")
+@RequestMapping("/certificates")
 public class CertificateController {
     private final CertificateService certificateService;
 
