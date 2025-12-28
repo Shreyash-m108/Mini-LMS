@@ -1,4 +1,4 @@
-package com.minilms.dto;
+package com.minilms.dto.chapterDto;
 
 import lombok.Getter;
 import lombok.Setter;

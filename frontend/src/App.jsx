@@ -1,9 +1,19 @@
-const Header = () => {
+import Header from "./components/Header";
+import { createBrowserRouter } from "react-router";
+
+const AppLayout = () => {
   return (
-    <h1 className="hello text-2xl font-bold text-teal-400">
-      This is best react application
-    </h1>
+    <div className="mainapp">
+      <Header></Header>
+    </div>
   );
 };
 
-export default Header;
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <body></body>,
+  },
+]);
+
+export default AppLayout;

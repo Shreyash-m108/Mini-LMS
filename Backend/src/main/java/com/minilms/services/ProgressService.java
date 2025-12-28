@@ -1,8 +1,10 @@
 package com.minilms.services;
 
-import com.minilms.dto.CompletionChapterRequest;
-import com.minilms.dto.ProgressSummaryDto;
+import com.minilms.dto.chapterDto.CompletionChapterRequest;
+import com.minilms.dto.pogressDto.ProgressSummaryDto;
 import com.minilms.entity.*;
+import com.minilms.exceptions.ResourceNotFound;
+import com.minilms.exceptions.UnauthorizedUserAndRole;
 import com.minilms.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +28,13 @@ public class ProgressService {
 
     public void completeChapter(CompletionChapterRequest request){
         User student = userRepository.findById(request.getStudentId())
-                .orElseThrow(()->new RuntimeException("Student not found with id: "+request.getStudentId()));
+                .orElseThrow(()->new ResourceNotFound("Student not found with id: "+request.getStudentId()));
 
         if(student.getRole() != Role.STUDENT)
-            throw new RuntimeException("User is not student");
+            throw new UnauthorizedUserAndRole("user is not student");
 
         Chapter chapter = chapterRepository.findById(request.getChapterId())
-                .orElseThrow(()->new RuntimeException("Chapter not found"));
+                .orElseThrow(()->new ResourceNotFound("Chapter not found"));
 
         Course course = chapter.getCourse();
 
@@ -66,10 +68,10 @@ public class ProgressService {
 
     public ProgressSummaryDto getProgressSummary(Long studentId ,Long courseId){
         User student = userRepository.findById(studentId)
-                .orElseThrow(()->new RuntimeException("Student not found"));
+                .orElseThrow(()->new ResourceNotFound("Student not found"));
 
         Course course =courseRepository.findById(courseId)
-                .orElseThrow(()->new RuntimeException("Course not found"));
+                .orElseThrow(()->new ResourceNotFound("Course not found"));
 
         courseAssignmentRepository.findByStudentAndCourse(student,course)
                 .orElseThrow(()->new RuntimeException("Student not assigned to this course"));

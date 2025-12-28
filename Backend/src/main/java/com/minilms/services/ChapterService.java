@@ -1,10 +1,12 @@
 package com.minilms.services;
 
-import com.minilms.dto.CreateChapterRequest;
+import com.minilms.dto.chapterDto.CreateChapterRequest;
 import com.minilms.entity.Chapter;
 import com.minilms.entity.Course;
 import com.minilms.entity.Role;
 import com.minilms.entity.User;
+import com.minilms.exceptions.ResourceNotFound;
+import com.minilms.exceptions.UnauthorizedUserAndRole;
 import com.minilms.repository.ChapterRepository;
 import com.minilms.repository.CourseRepository;
 import com.minilms.repository.UserRepository;
@@ -26,19 +28,19 @@ public class ChapterService {
 
     public Chapter addChapter (CreateChapterRequest request){
         User mentor = userRepository.findById(request.getMentorId())
-                .orElseThrow(()->new RuntimeException("Mentor not found."));
+                .orElseThrow(()->new ResourceNotFound("mentor not found."));
 
         if(mentor.getRole() != Role.MENTOR)
-            throw new RuntimeException("Only Mentors can add the course");
+            throw new UnauthorizedUserAndRole("only mentors can add the course");
 
         if(!mentor.getApproved())
-            throw new RuntimeException("Mentor is not approved");
+            throw new UnauthorizedUserAndRole("mentor is not approved");
 
         Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(()->new RuntimeException("Course not found"));
+                .orElseThrow(()->new ResourceNotFound("Course not found"));
 
         if(!course.getMentor().getId().equals(request.getMentorId()))
-            throw new RuntimeException("You have no right to change this course");
+            throw new UnauthorizedUserAndRole("You have no right to change this course");
 
         List<Chapter> existingChapters =
                 chapterRepository.findByCourseOrderBySequenceOrderAsc(course);

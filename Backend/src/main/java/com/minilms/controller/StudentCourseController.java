@@ -1,7 +1,6 @@
 package com.minilms.controller;
 
-import com.minilms.dto.ChapterViewDto;
-import com.minilms.entity.Chapter;
+import com.minilms.dto.chapterDto.ChapterViewDto;
 import com.minilms.services.StudentCourseService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,24 +1,25 @@
-package com.minilms.dto.userDto;
+package com.minilms.dto.courseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.minilms.entity.Role;
+import com.minilms.entity.Chapter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewUserDTO {
-    private Long userId;
-    private String name;
-    private String email;
-    private Role role;
-    private boolean approved;
+public class ViewCourseDTO {
+    private String title;
+    private String description;
+    private String mentorName;
+    private int studentCount;
+    private List<Chapter> chapters;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd:MM:yyyy")
     private LocalDateTime createdAt;
 }

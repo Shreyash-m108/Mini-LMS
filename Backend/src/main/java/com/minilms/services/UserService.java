@@ -1,8 +1,12 @@
 package com.minilms.services;
 
 import com.minilms.dto.userDto.CreateUserRequest;
+import com.minilms.dto.userDto.LoginRequest;
 import com.minilms.dto.userDto.ViewUserDTO;
 import com.minilms.entity.User;
+import com.minilms.exceptions.DuplicateEmail;
+import com.minilms.exceptions.IncorrectEmailOrPassword;
+import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +27,18 @@ public class UserService {
     }
 
     //add user
-    public User saveUser(CreateUserRequest createUserRequest){
+    public User saveUser(CreateUserRequest request){
         User user = new User();
-        user.setName(createUserRequest.getName());
-        user.setEmail(createUserRequest.getEmail());
-        user.setPassword(createUserRequest.getPassword());
-        user.setRole(createUserRequest.getRole());
-        user.setApproved(createUserRequest.getApproved());
-        user.setCreatedAt(createUserRequest.getCreatedAt());
+        if(findByEmail(request.getEmail()).isPresent()){
+            throw new DuplicateEmail("email is already present.");
+        }
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
+        user.setApproved(request.getApproved());
+        user.setCreatedAt(request.getCreatedAt());
         return userRepository.save(user);
     }
 
@@ -38,11 +46,31 @@ public class UserService {
         return userRepository.findAll()
                 .stream().map(
                         user -> new ViewUserDTO(
+                                user.getId(),
                                 user.getName(),
                                 user.getEmail(),
                                 user.getRole(),
                                 user.getApproved(),
                                 user.getCreatedAt()
                         )).toList();
+    }
+
+    public ViewUserDTO validLogin(LoginRequest request){
+        User user = findByEmail(request.getEmail())
+                .orElseThrow(()->new IncorrectEmailOrPassword("incorrect email"));
+
+        if(!request.getPassword().equals(user.getPassword())){
+            throw new IncorrectEmailOrPassword("incorrect password.");
+        }
+
+        return new ViewUserDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getApproved(),
+                user.getCreatedAt()
+        );
+
     }
 }

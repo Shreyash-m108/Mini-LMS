@@ -1,6 +1,6 @@
 package com.minilms.controller;
 
-import com.minilms.dto.CreateChapterRequest;
+import com.minilms.dto.chapterDto.CreateChapterRequest;
 import com.minilms.entity.Chapter;
 import com.minilms.services.ChapterService;
 import org.springframework.web.bind.annotation.PostMapping;

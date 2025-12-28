@@ -1,7 +1,8 @@
 package com.minilms.controller;
 
-import com.minilms.dto.AssignCourseRequest;
+import com.minilms.dto.courseDto.AssignCourseRequest;
 import com.minilms.entity.Course;
+import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.services.AssignCourseService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,10 +1,12 @@
 package com.minilms.services;
 
-import com.minilms.dto.AssignCourseRequest;
+import com.minilms.dto.courseDto.AssignCourseRequest;
 import com.minilms.entity.Course;
 import com.minilms.entity.CourseAssignment;
 import com.minilms.entity.Role;
 import com.minilms.entity.User;
+import com.minilms.exceptions.ResourceNotFound;
+import com.minilms.exceptions.UnauthorizedUserAndRole;
 import com.minilms.repository.CourseAssignmentRepository;
 import com.minilms.repository.CourseRepository;
 import com.minilms.repository.UserRepository;
@@ -36,7 +38,7 @@ public class AssignCourseService {
 
 
         Course course = courseRepository.findById(request.getCourseId()).orElseThrow(
-                ()->new RuntimeException("Course nit found")
+                ()->new RuntimeException("Course not found")
         );
 
         if(!course.getMentor().getId().equals(request.getMentorId()))
@@ -66,11 +68,12 @@ public class AssignCourseService {
 
     }
 
-    public  List<Course> getAssignedCourses(Long studentId){
+    public  List<Course> getAssignedCourses(Long studentId) throws ResourceNotFound {
         User student = userRepository.findById(studentId)
-                .orElseThrow(()->new RuntimeException("Student not found with id: "+studentId));
+                .orElseThrow(()->new ResourceNotFound("student not found with id "+studentId));
+
         if(student.getRole()!=Role.STUDENT)
-            throw new RuntimeException("Student is not valid");
+            throw new UnauthorizedUserAndRole("only mentor can assign not student");
 
         List<CourseAssignment> assignments =
                 courseAssignmentRepository.findByStudent(student);

@@ -1,10 +1,11 @@
 package com.minilms.services;
 
-import com.minilms.dto.ChapterViewDto;
+import com.minilms.dto.chapterDto.ChapterViewDto;
 import com.minilms.entity.Chapter;
 import com.minilms.entity.Course;
 import com.minilms.entity.Progress;
 import com.minilms.entity.User;
+import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.repository.ChapterRepository;
 import com.minilms.repository.CourseRepository;
 import com.minilms.repository.ProgressRepository;
@@ -30,10 +31,10 @@ public class StudentCourseService {
 
     public List<ChapterViewDto> getCourseChapters(Long studentId, Long courseId){
         User student = userRepository.findById(studentId)
-                .orElseThrow(()->new RuntimeException("Student not found with id: "+studentId));
+                .orElseThrow(()->new ResourceNotFound("Student not found with id: "+studentId));
 
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(()-> new RuntimeException("Course not found"));
+                .orElseThrow(()-> new ResourceNotFound("Course not found"));
 
         List<Chapter> chapters = chapterRepository.findByCourseOrderBySequenceOrderAsc(course);
 

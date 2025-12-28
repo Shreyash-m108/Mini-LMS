@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface CourseAssignmentRepository extends JpaRepository<CourseAssignment, Long> {
     List<CourseAssignment> findByStudent(User student);
     Optional<CourseAssignment>  findByStudentAndCourse(User student, Course course);
+
+    int countByCourse(Course course);
 }

@@ -1,12 +1,10 @@
 package com.minilms.controller;
 
-import com.minilms.dto.CreateCourseRequest;
+import com.minilms.dto.courseDto.CreateCourseRequest;
+import com.minilms.dto.courseDto.ViewCourseDTO;
 import com.minilms.entity.Course;
 import com.minilms.services.CourseService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +19,10 @@ public class CourseController {
     @PostMapping
     public Course createCourse(@RequestBody CreateCourseRequest request){
         return  courseService.createCourseRequest(request);
+    }
+
+    @GetMapping("/{studentId}")
+    public List<ViewCourseDTO> getCourseByStudent(@RequestParam Long studentId){
+        return courseService.getCoursesByStudent(studentId);
     }
 }

@@ -1,9 +1,10 @@
 package com.minilms.services;
 
-import com.minilms.dto.ProgressSummaryDto;
+import com.minilms.dto.pogressDto.ProgressSummaryDto;
 import com.minilms.entity.Certificate;
 import com.minilms.entity.Course;
 import com.minilms.entity.User;
+import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.repository.CertificateRepository;
 import com.minilms.repository.CourseRepository;
 import com.minilms.repository.ProgressRepository;
@@ -31,10 +32,10 @@ public class CertificateService {
             throw new RuntimeException("Course is not completed yet.");
 
         User student = userRepository.findById(studentId)
-                .orElseThrow(()->new RuntimeException("Student is not found"));
+                .orElseThrow(()->new ResourceNotFound("student is not found"));
 
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(()->new RuntimeException("Course is not found"));
+                .orElseThrow(()->new ResourceNotFound("course is not found"));
 
         return certificateRepository
                 .findByStudentAndCourse(student, course)
