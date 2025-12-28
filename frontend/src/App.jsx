@@ -1,19 +1,13 @@
+import { Outlet } from "react-router";
 import Header from "./components/Header";
-import { createBrowserRouter } from "react-router";
 
 const AppLayout = () => {
   return (
     <div className="mainapp">
-      <Header></Header>
+      <Header />
+      <Outlet />
     </div>
   );
 };
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <body></body>,
-  },
-]);
 
 export default AppLayout;
