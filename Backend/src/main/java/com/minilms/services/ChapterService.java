@@ -10,37 +10,26 @@ import com.minilms.exceptions.UnauthorizedUserAndRole;
 import com.minilms.repository.ChapterRepository;
 import com.minilms.repository.CourseRepository;
 import com.minilms.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ChapterService {
     private final ChapterRepository chapterRepository;
     private final CourseRepository courseRepository;
-    private final UserRepository userRepository;
 
-    public ChapterService(ChapterRepository chapterRepository, CourseRepository courseRepository,UserRepository userRepository){
-        this.chapterRepository = chapterRepository;
-        this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
-    }
+
 
     public Chapter addChapter (CreateChapterRequest request){
-        User mentor = userRepository.findById(request.getMentorId())
-                .orElseThrow(()->new ResourceNotFound("mentor not found."));
-
-        if(mentor.getRole() != Role.MENTOR)
-            throw new UnauthorizedUserAndRole("only mentors can add the course");
-
-        if(!mentor.getApproved())
-            throw new UnauthorizedUserAndRole("mentor is not approved");
 
         Course course = courseRepository.findById(request.getCourseId())
                 .orElseThrow(()->new ResourceNotFound("Course not found"));
 
-        if(!course.getMentor().getId().equals(request.getMentorId()))
-            throw new UnauthorizedUserAndRole("You have no right to change this course");
+        if(!course.getMentor().getRole().equals(Role.MENTOR))
+            throw new UnauthorizedUserAndRole("you are not mentor");
 
         List<Chapter> existingChapters =
                 chapterRepository.findByCourseOrderBySequenceOrderAsc(course);

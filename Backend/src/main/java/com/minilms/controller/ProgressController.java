@@ -1,6 +1,6 @@
 package com.minilms.controller;
 
-import com.minilms.dto.pogressDto.ProgressSummaryDto;
+import com.minilms.dto.progressDto.ProgressSummaryDto;
 import com.minilms.services.ProgressService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

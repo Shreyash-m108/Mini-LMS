@@ -1,11 +1,16 @@
 package com.minilms.controller;
 
+import com.minilms.dto.dashboardDto.DashboardDTO;
 import com.minilms.dto.userDto.CreateUserRequest;
 import com.minilms.dto.userDto.LoginRequest;
+import com.minilms.dto.userDto.RegisterDTO;
 import com.minilms.dto.userDto.ViewUserDTO;
 import com.minilms.entity.User;
+import com.minilms.services.DashboardService;
 import com.minilms.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final DashboardService dashboardService;
 
     @PostMapping
     public User createUser(@RequestBody CreateUserRequest request){
@@ -28,13 +34,19 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody CreateUserRequest request){
-        return createUser(request);
+    public ViewUserDTO register(@RequestBody RegisterDTO request){
+         return userService.register(request);
+
     }
 
     @PostMapping("/login")
     public ViewUserDTO login (@RequestBody LoginRequest request){
         return userService.validLogin(request);
+    }
+
+    @PostMapping("/dashboard")
+    public DashboardDTO getDashboard(){
+        return dashboardService.mockDashboard();
     }
 
 }

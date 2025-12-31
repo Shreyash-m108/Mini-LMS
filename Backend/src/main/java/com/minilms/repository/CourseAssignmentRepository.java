@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseAssignmentRepository extends JpaRepository<CourseAssignment, Long> {
-    List<CourseAssignment> findByStudent(User student);
+    List<CourseAssignment> findByStudentId(Long studentId);
     Optional<CourseAssignment>  findByStudentAndCourse(User student, Course course);
+    boolean existsByStudentAndCourse(User student, Course course);
+
 
     int countByCourse(Course course);
 }

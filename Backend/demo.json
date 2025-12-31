@@ -1,0 +1,44 @@
+{
+  "student": {
+    "name": "Nami",
+    "email": "nami@op.com"
+  },
+  "courses": [
+    {
+      "id": 101,
+      "title": "Java Basics",
+      "progress": 80,
+      "status": "ONGOING",
+      "chapters": [
+        {
+          "id": 1,
+          "title": "Introduction",
+          "completed": true
+        },
+        {
+          "id": 2,
+          "title": "OOP Basics",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "title": "Spring Boot",
+      "progress": 100,
+      "status": "COMPLETED",
+      "chapters": [
+        {
+          "id": 10,
+          "title": "Controllers",
+          "completed": true
+        }
+      ]
+    }
+  ],
+  "progress": {
+    "totalCourses": 2,
+    "completedCourses": 1,
+    "overallProgress": 90
+  }
+}

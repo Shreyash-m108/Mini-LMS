@@ -1,7 +1,7 @@
 package com.minilms.services;
 
 import com.minilms.dto.chapterDto.CompletionChapterRequest;
-import com.minilms.dto.pogressDto.ProgressSummaryDto;
+import com.minilms.dto.progressDto.ProgressSummaryDto;
 import com.minilms.entity.*;
 import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.exceptions.UnauthorizedUserAndRole;

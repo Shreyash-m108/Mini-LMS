@@ -29,54 +29,51 @@ public class AssignCourseService {
     }
 
     //assign the course
-    public void assignCourseToStudent(AssignCourseRequest request){
+    public void assignCourseToStudents(AssignCourseRequest request){
         User mentor = userRepository.findById(request.getMentorId())
-                .orElseThrow(()->new RuntimeException("Mentor not found"));
+                .orElseThrow(()->new ResourceNotFound("Mentor not found"));
 
         if(mentor.getRole() != Role.MENTOR || !mentor.getApproved())
-            throw new RuntimeException("This mentor is not allowed to do changes");
+            throw new UnauthorizedUserAndRole("This mentor is not allowed to do changes");
 
 
         Course course = courseRepository.findById(request.getCourseId()).orElseThrow(
-                ()->new RuntimeException("Course not found")
+                ()->new ResourceNotFound("Course not found")
         );
 
         if(!course.getMentor().getId().equals(request.getMentorId()))
-            throw new RuntimeException("Mentor is allowed to change course");
+            throw new UnauthorizedUserAndRole("this mentor is allowed to change course");
 
-
-        for(Long studentId: request.getStudentIds()){
-            User student =userRepository.findById(studentId)
-                    .orElseThrow(()->new RuntimeException("Student not found"));
-
+        List<User> students =userRepository.findAllById(request.getStudentIds());
+        for(User student : students){
             if(student.getRole() != Role.STUDENT)
-                throw new RuntimeException("This is not student: "+studentId);
+                continue;
 
             boolean alreadyAssigned =
-                    courseAssignmentRepository.findByStudentAndCourse(student,course).isPresent();
+                    courseAssignmentRepository.existsByStudentAndCourse(student,course);
 
-            if(alreadyAssigned){
-                continue;
-            }
+            if(alreadyAssigned) continue;
 
-            CourseAssignment assignment = new CourseAssignment();
-            assignment.setStudent(student);
-            assignment.setCourse(course);
+            CourseAssignment courseAssignment = new CourseAssignment();
+            courseAssignment.setStudent(student);
+            courseAssignment.setCourse(course);
 
-            courseAssignmentRepository.save(assignment);
+            courseAssignmentRepository.save(courseAssignment);
+
         }
+
 
     }
 
-    public  List<Course> getAssignedCourses(Long studentId) throws ResourceNotFound {
+    public  List<Course> getAssignedCourses(Long studentId)  {
         User student = userRepository.findById(studentId)
                 .orElseThrow(()->new ResourceNotFound("student not found with id "+studentId));
 
         if(student.getRole()!=Role.STUDENT)
-            throw new UnauthorizedUserAndRole("only mentor can assign not student");
+            throw new UnauthorizedUserAndRole("only students see courses");
 
         List<CourseAssignment> assignments =
-                courseAssignmentRepository.findByStudent(student);
+                courseAssignmentRepository.findByStudentId(studentId);
 
         return assignments.stream()
                 .map(CourseAssignment::getCourse)

@@ -2,7 +2,6 @@ package com.minilms.controller;
 
 import com.minilms.dto.courseDto.AssignCourseRequest;
 import com.minilms.entity.Course;
-import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.services.AssignCourseService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,7 @@ public class CourseAssignmentController {
 
     @PostMapping("/assign")
     public String courseAssignment(@RequestBody AssignCourseRequest request){
-        assignCourseService.assignCourseToStudent(request);
+        assignCourseService.assignCourseToStudents(request);
         return "Course assigned Successfully";
     }
 

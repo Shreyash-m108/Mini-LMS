@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class CreateChapterRequest {
     private Long courseId;
-    private Long mentorId;
     private String title;
     private String description;
     private String imageUrl;

@@ -1,6 +1,6 @@
 package com.minilms.services;
 
-import com.minilms.dto.pogressDto.ProgressSummaryDto;
+import com.minilms.dto.progressDto.ProgressSummaryDto;
 import com.minilms.entity.Certificate;
 import com.minilms.entity.Course;
 import com.minilms.entity.User;

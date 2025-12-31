@@ -15,10 +15,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ViewUserDTO {
     private Long userId;
-    private String name;
+    private String firstName;
+    private String middleName;
+    private String lastName;
     private String email;
     private Role role;
     private boolean approved;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd:MM:yyyy")
     private LocalDateTime createdAt;
+
+    public ViewUserDTO(Long id, String firstName, String lastName, String email) {
+    }
 }

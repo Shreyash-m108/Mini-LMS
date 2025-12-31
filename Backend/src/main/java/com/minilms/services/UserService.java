@@ -2,14 +2,18 @@ package com.minilms.services;
 
 import com.minilms.dto.userDto.CreateUserRequest;
 import com.minilms.dto.userDto.LoginRequest;
+import com.minilms.dto.userDto.RegisterDTO;
 import com.minilms.dto.userDto.ViewUserDTO;
+import com.minilms.entity.Role;
 import com.minilms.entity.User;
 import com.minilms.exceptions.DuplicateEmail;
 import com.minilms.exceptions.IncorrectEmailOrPassword;
 import com.minilms.exceptions.ResourceNotFound;
+import com.minilms.exceptions.UnauthorizedUserAndRole;
 import com.minilms.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +37,14 @@ public class UserService {
             throw new DuplicateEmail("email is already present.");
         }
 
-        user.setName(request.getName());
+        user.setFirstName(request.getFirstName());
+
+        if (!request.getMiddleName().isEmpty()) {
+            user.setMiddleName(request.getMiddleName());
+        } else {
+            user.setMiddleName(" ");
+        }
+        user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setRole(request.getRole());
@@ -47,7 +58,9 @@ public class UserService {
                 .stream().map(
                         user -> new ViewUserDTO(
                                 user.getId(),
-                                user.getName(),
+                                user.getFirstName(),
+                                user.getMiddleName(),
+                                user.getLastName(),
                                 user.getEmail(),
                                 user.getRole(),
                                 user.getApproved(),
@@ -65,7 +78,9 @@ public class UserService {
 
         return new ViewUserDTO(
                 user.getId(),
-                user.getName(),
+                user.getFirstName(),
+                user.getMiddleName(),
+                user.getLastName(),
                 user.getEmail(),
                 user.getRole(),
                 user.getApproved(),
@@ -73,4 +88,37 @@ public class UserService {
         );
 
     }
+
+    public ViewUserDTO register(RegisterDTO request){
+        User user = new User();
+        if(userRepository.findByEmail(request.getEmail()).isPresent())
+            throw new DuplicateEmail("Email is already exists");
+
+        user.setFirstName(request.getFirstName());
+        if (!request.getMiddleName().isEmpty()) {
+            user.setMiddleName(request.getMiddleName());
+        } else {
+            user.setMiddleName(" ");
+        }
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+
+        user.setRole(Role.STUDENT);
+        user.setApproved(true);
+        user.setCreatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        return new ViewUserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getMiddleName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getApproved(),
+                user.getCreatedAt()
+        );
+    }
+
+
 }

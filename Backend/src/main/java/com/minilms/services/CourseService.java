@@ -49,7 +49,7 @@ public class CourseService {
                     ViewCourseDTO dto = new ViewCourseDTO();
                     dto.setTitle(course.getTitle());
                     dto.setDescription(course.getDescription());
-                    dto.setMentorName(course.getMentor().getName());
+                    dto.setMentorName(course.getMentor().getFirstName());
                     dto.setChapters(course.getChapters());
                     int studentCount = courseAssignmentRepository.countByCourse(course);
                     dto.setStudentCount(studentCount);

@@ -1,4 +1,4 @@
-package com.minilms.dto.pogressDto;
+package com.minilms.dto.progressDto;
 
 import lombok.Getter;
 import lombok.Setter;

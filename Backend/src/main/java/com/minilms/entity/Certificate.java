@@ -7,13 +7,13 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "certificates",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"student_id","course_id"})
-    }
-)
 @Getter
 @Setter
+@Table(name = "certificates",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"student_id","course_id"})
+        }
+)
 public class Certificate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
