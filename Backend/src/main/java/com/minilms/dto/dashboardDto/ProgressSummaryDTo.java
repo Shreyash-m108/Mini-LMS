@@ -8,5 +8,5 @@ import lombok.Setter;
 public class ProgressSummaryDTO {
     private int totalCourses;
     private int completedCourses;
-    private double overallProgress;
+    private int inProgress;
 }

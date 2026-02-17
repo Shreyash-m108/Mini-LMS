@@ -39,11 +39,7 @@ public class UserService {
 
         user.setFirstName(request.getFirstName());
 
-        if (!request.getMiddleName().isEmpty()) {
-            user.setMiddleName(request.getMiddleName());
-        } else {
-            user.setMiddleName(" ");
-        }
+        user.setMiddleName(request.getMiddleName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
@@ -89,17 +85,14 @@ public class UserService {
 
     }
 
+    //register via frontend user
     public ViewUserDTO register(RegisterDTO request){
         User user = new User();
         if(userRepository.findByEmail(request.getEmail()).isPresent())
             throw new DuplicateEmail("Email is already exists");
 
         user.setFirstName(request.getFirstName());
-        if (!request.getMiddleName().isEmpty()) {
-            user.setMiddleName(request.getMiddleName());
-        } else {
-            user.setMiddleName(" ");
-        }
+        user.setMiddleName(request.getMiddleName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());

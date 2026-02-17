@@ -44,9 +44,5 @@ public class UserController {
         return userService.validLogin(request);
     }
 
-    @PostMapping("/dashboard")
-    public DashboardDTO getDashboard(){
-        return dashboardService.mockDashboard();
-    }
 
 }

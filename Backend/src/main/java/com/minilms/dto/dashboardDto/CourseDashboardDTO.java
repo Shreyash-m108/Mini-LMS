@@ -6,11 +6,14 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter@Setter
-public class CourseInfoDTO {
+public class CourseDashboardDTO {
+    private Long courseId;
     private String title;
     private String description;
     private MentorInfoDTO mentor;
+    private long completedChapters;
+    private int totalChapters;
     private double progress;
     private String status;
-    private List<ChapterProgressDTO> chapters;
+
 }

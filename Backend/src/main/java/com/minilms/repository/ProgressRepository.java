@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface ProgressRepository extends JpaRepository<Progress, Long> {
     List<Progress> findByStudent(User student);
     Optional<Progress> findByStudentAndChapter(User student, Chapter chapter);
+
+    long countByStudent_IdAndChapter_Course_IdAndCompletedTrue(Long studentId, Long courseId);
 }

@@ -5,5 +5,7 @@ import lombok.Setter;
 
 @Getter@Setter
 public class MentorInfoDTO {
-    private String mentorName;
+    private Long id;
+    private String firstName;
+    private String lastName;
 }

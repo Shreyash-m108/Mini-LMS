@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 public class DashboardDTO {
     private StudentInfoDTO student;
-    private List<CourseInfoDTO> courses;
+    private List<CourseDashboardDTO> courses;
     private ProgressSummaryDTO progress;
 }

@@ -1,9 +1,16 @@
 package com.minilms.services;
 
 import com.minilms.dto.dashboardDto.*;
+import com.minilms.entity.Chapter;
+import com.minilms.entity.Course;
+import com.minilms.entity.CourseAssignment;
+import com.minilms.entity.User;
+import com.minilms.exceptions.ResourceNotFound;
 import com.minilms.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,59 +23,74 @@ public class DashboardService {
     private final ProgressRepository progressRepository;
     private final CourseAssignmentRepository courseAssignmentRepository;
 
+    public DashboardDTO getDashboard(Long studentId) {
+
+        User student = userRepository.findById(studentId)
+                .orElseThrow(()-> new ResourceNotFound("student not found with id "+studentId));
 
 
-    public DashboardDTO mockDashboard(){
-        DashboardDTO dashboardDTO = new DashboardDTO();
-        //student DTO
+        //student dto
         StudentInfoDTO studentInfoDTO = new StudentInfoDTO();
-        studentInfoDTO.setEmail("luffy@op.com");
-        studentInfoDTO.setFirstName("Luffy");
-        studentInfoDTO.setMiddleName("D");
-        studentInfoDTO.setLastName("Monkey");
+        studentInfoDTO.setId(student.getId());
+        studentInfoDTO.setFirstName(student.getFirstName());
+        studentInfoDTO.setLastName(student.getLastName());
+        studentInfoDTO.setMiddleName(student.getMiddleName());
+        studentInfoDTO.setEmail(student.getEmail());
 
+        List<CourseAssignment> assignments =
+                courseAssignmentRepository.findByStudentId(studentId);
 
-        MentorInfoDTO mentorInfoDTO = new MentorInfoDTO();
-        mentorInfoDTO.setMentorName("Silvers Reyleigh");
+        List<CourseDashboardDTO> courseDashboardList = new ArrayList<>();
 
-        ChapterProgressDTO chapterProgressDTO1 = new ChapterProgressDTO();
-        chapterProgressDTO1.setChapterName("Ornament Haki");
-        chapterProgressDTO1.setDescription("Basics about ornament haki.");
-        chapterProgressDTO1.setImageUrl("http");
-        chapterProgressDTO1.setVideoUrl("http");
-        chapterProgressDTO1.setCompleted(true);
+        for(CourseAssignment assignment : assignments){
+            Course course = assignment.getCourse();
+            User mentor = course.getMentor();
 
-        ChapterProgressDTO chapterProgressDTO2 = new ChapterProgressDTO();
-        chapterProgressDTO2.setChapterName("Observation Haki");
-        chapterProgressDTO2.setDescription("Basics about observation haki.");
-        chapterProgressDTO2.setImageUrl("http");
-        chapterProgressDTO2.setVideoUrl("http");
-        chapterProgressDTO2.setCompleted(false);
+            //mentor dto
+            MentorInfoDTO mentorInfoDTO = new MentorInfoDTO();
+            mentorInfoDTO.setId(mentor.getId());
+            mentorInfoDTO.setFirstName(mentor.getFirstName());
+            mentorInfoDTO.setLastName(mentor.getLastName());
 
-        ChapterProgressDTO chapterProgressDTO3 = new ChapterProgressDTO();
-        chapterProgressDTO3.setChapterName("Conquerers Haki");
-        chapterProgressDTO3.setDescription("Basics about conquerers haki.");
-        chapterProgressDTO3.setImageUrl("http");
-        chapterProgressDTO3.setVideoUrl("http");
-        chapterProgressDTO3.setCompleted(false);
+            List<Chapter> chaptersList = chapterRepository.
+                    findByCourseOrderBySequenceOrderAsc(course);
 
-        CourseInfoDTO courseInfoDTO = new CourseInfoDTO();
-        courseInfoDTO.setTitle("Haki");
-        courseInfoDTO.setDescription("Overall about haki and how to use haki");
-        courseInfoDTO.setChapters(List.of(chapterProgressDTO1,chapterProgressDTO2,chapterProgressDTO3));
-        courseInfoDTO.setStatus("ONGOING");
-        courseInfoDTO.setProgress(33.33);
-        courseInfoDTO.setMentor(mentorInfoDTO);
+            int totalChapters =  chaptersList.size();
+            long completedChapters =
+                    progressRepository.countByStudent_IdAndChapter_Course_IdAndCompletedTrue(
+                            studentId , course.getId()
+                    );
+            double percentage = totalChapters == 0 ? 0 :
+                    ((double) (completedChapters * 100) / totalChapters);
+
+            //course dashboard dto
+            CourseDashboardDTO courseDashboardDTO = new CourseDashboardDTO();
+            courseDashboardDTO.setCourseId(course.getId());
+            courseDashboardDTO.setTitle(course.getTitle());
+            courseDashboardDTO.setDescription(course.getDescription());
+            courseDashboardDTO.setMentor(mentorInfoDTO);
+            courseDashboardDTO.setProgress(percentage);
+            courseDashboardDTO.setTotalChapters(totalChapters);
+            courseDashboardDTO.setCompletedChapters(completedChapters);
+
+            courseDashboardList.add(courseDashboardDTO);
+        }
 
         ProgressSummaryDTO progressSummaryDTO = new ProgressSummaryDTO();
-        progressSummaryDTO.setTotalCourses(1);
-        progressSummaryDTO.setCompletedCourses(0);
-        progressSummaryDTO.setOverallProgress(courseInfoDTO.getProgress());
+        progressSummaryDTO.setTotalCourses(courseDashboardList.size());
+        long completedCourses = courseDashboardList.stream()
+                .filter(c->c.getProgress() == 100).count();
 
+        progressSummaryDTO.setCompletedCourses((int) completedCourses);
+        progressSummaryDTO.setInProgress(  courseDashboardList.size() - (int) completedCourses);
+
+        DashboardDTO dashboardDTO = new DashboardDTO();
         dashboardDTO.setStudent(studentInfoDTO);
-        dashboardDTO.setCourses(List.of(courseInfoDTO));
+        dashboardDTO.setCourses(courseDashboardList);
         dashboardDTO.setProgress(progressSummaryDTO);
-        return dashboardDTO;
+
+        return  dashboardDTO;
     }
+
 
 }

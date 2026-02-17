@@ -1,64 +1,73 @@
+import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const Register = () => {
   const [data, setData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleRegister = async () => {
-    const { name, email, password } = data;
-    if (!name || !password || !email) {
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const { firstName, lastName, email, password } = data;
+    if (!firstName || !lastName || !password || !email) {
       toast.error("All fields are required");
       return;
     }
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:8080/api/v1/users/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
+        data,
       );
-      console.log("succesfully fetched");
 
-      if (!response.ok) {
-        throw new Error(msg || "Resgitration falied");
-      }
+      console.log("user details: ", response.data);
       toast.success("Registration successful");
       navigate("/login");
     } catch (err) {
-      toast.error(err.message || "Something went wrong");
+      console.log("error:", err);
+      toast.error(err.response?.data?.message || "something went wrong");
     }
   };
   return (
     <div className="register min-h-screen flex items-center justify-center">
-      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-8 text-center">
+      <form
+        onSubmit={handleRegister}
+        className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-8 text-center"
+      >
         <h2 className="text-xl font-semibold mb-6">Create your account</h2>
 
-        <label className="label font-bold text-sm">Name</label>
+        <label className="label font-bold text-sm">First Name</label>
         <input
           type="text"
           className="input input-bordered input-md w-full mb-3"
-          placeholder="Full name"
-          name="name"
-          value={data.name}
+          placeholder="first name"
+          name="firstName"
+          value={data.firstName}
+          onChange={handleChange}
+        />
+
+        <label className="label font-bold text-sm">Last Name</label>
+        <input
+          type="text"
+          className="input input-bordered input-md w-full mb-3"
+          placeholder="last name"
+          name="lastName"
+          value={data.lastName}
           onChange={handleChange}
         />
 
@@ -82,10 +91,7 @@ const Register = () => {
           onChange={handleChange}
         />
 
-        <button
-          className="btn btn-neutral btn-md w-full"
-          onClick={handleRegister}
-        >
+        <button type="submit" className="btn btn-neutral btn-md w-full">
           Register
         </button>
 
@@ -95,7 +101,7 @@ const Register = () => {
             <span className="link link-primary cursor-pointer">Login</span>
           </p>
         </Link>
-      </fieldset>
+      </form>
     </div>
   );
 };
